@@ -3,6 +3,7 @@ function doGet(e) {
   const sheets = openSheets(id);
 
   if (resource == "aggregation") return responseJson(makeAggregation(sheets))
+  if (resource == "entries") return responseJson(getEntries(sheets[0]))
 
   return null
 }
