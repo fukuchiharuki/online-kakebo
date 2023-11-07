@@ -3,8 +3,8 @@ function getEntries(sheet) {
   const rows = range.getValues()
   return rows
     .filter(columns => columns[0])
+    .filter(termFilter)
     .sort(dateOrder)
-    .slice(0, 20)
     .map(columns => ({
       timestamp: Utilities.formatDate(columns[0], "JST", "yyyy-MM-dd'T'HH:mm:ss"),
       date: Utilities.formatDate(columns[1], "JST", "yyyy-MM-dd"),
@@ -15,12 +15,19 @@ function getEntries(sheet) {
     }))
 }
 
+function termFilter(it) {
+  const date = new Date(it[1])
+  const min = new Date()
+  min.setMonth(min.getMonth() - 6)
+  return date.getTime() > min.getTime()
+} 
+
 function dateOrder(a, b) {
-  const a0 = new Date(a[0]).getTime()
-  const b0 = new Date(b[0]).getTime()
-  const diff0 = b0 - a0 
-  if (diff0 != 0) return diff0
   const a1 = new Date(a[1]).getTime()
   const b1 = new Date(b[1]).getTime()
-  return b1 - a1
+  const diff1 = b1 - a1 
+  if (diff1 != 0) return diff1
+  const a0 = new Date(a[0]).getTime()
+  const b0 = new Date(b[0]).getTime()
+  return b0 - a0
 }
